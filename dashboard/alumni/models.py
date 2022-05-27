@@ -1,9 +1,8 @@
 from collections import UserDict
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import datetime
-from django.contrib.auth.models import User, auth
-from django.utils.timezone import now
+from django.contrib.auth.models import auth
+from django.utils import timezone
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -26,7 +25,7 @@ class Career(models.Model):
     organization = models.CharField(max_length=150)
     position = models.CharField(max_length=150)
     s_date = models.DateField(max_length=100)
-    e_date = models.DateField(default= now())
+    e_date = models.DateField(default=timezone.now)
 
 class Events(models.Model):
     event_name = models.CharField(max_length=100)

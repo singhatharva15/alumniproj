@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 
@@ -8,10 +9,13 @@ from .forms import CareerForm, ProfileForm
 
 
 # Create your views here.
+@login_required
 def index(request):
     user= CustomUser.objects.all()
     return render(request,"index.html",{'newusers': user})
 
+
+@login_required
 def updateprofile(request, username):  
     student = CustomUser.objects.get(username = username)
     form = ProfileForm(request.POST or None, instance= student)  
@@ -23,11 +27,15 @@ def updateprofile(request, username):
     
     return render(request, 'editprofile.html', {'students': student, 'form' : form})
 
+
+@login_required
 def destroyBatch(request, username, id):  
     car = Career.objects.get(id=id)  
     car.delete()  
     return redirect('/career/'+username) 
 
+
+@login_required
 def career(request, username):  
     if request.method == "POST":  
         form = CareerForm(request.POST, initial={'account': username})  
@@ -43,20 +51,24 @@ def career(request, username):
     return render(request,'career.html',{'form':form, 'exp': exp})
 
 
+@login_required
 def events(request):
     even= Events.objects.all()
     return render(request,"events.html",{'events': even})
 
+
+@login_required
 def opportunity(request):
     opp= Opportunities.objects.all()
     return render(request,"opportunity.html",{'opps': opp})
+
 
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
 
-        user= auth.authenticate(username=username, password=password)
+        user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
             return redirect('/home')
