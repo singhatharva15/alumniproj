@@ -12,6 +12,7 @@ urlpatterns = [
     path('career/update-experience/<int:pk>/', views.UpdateExperice.as_view(), name="update_experience"),
     path('career/delete-experience/<int:pk>/', views.destroyBatch, name="delete_experience"),  
 
+    path('generate-certificate/', views.generate_certificate, name='generate_certificate'),
     # path('career/', views.career),
     path('events/', views.events, name='events'),
 

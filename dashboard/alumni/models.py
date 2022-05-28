@@ -2,7 +2,6 @@ from collections import UserDict
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import auth
-from django.utils import timezone
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -11,7 +10,7 @@ class CustomUser(AbstractUser):
     #email = models.EmailField(max_length=254, unique=True, db_index=True, primary_key=True)   
     course_completed = models.CharField(max_length=75)
     mobile = models.IntegerField(null=True)
-    certificate = models.FileField(null=True)
+    # certificate = models.FileField(upload_to='certificates/', null=True)
     career_opportunity = models.BooleanField(default=False)
     mentor_students = models.BooleanField(default=False)
     train_students = models.BooleanField(default=False)
