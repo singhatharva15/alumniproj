@@ -20,6 +20,7 @@ def magic_link(request):
         user, _ = User.objects.get_or_create(username=email.split('@')[0], email=email)
         token = get_query_string(user)
 
+        print(f"Your link: {os.environ['HOST_NAME']}profile/{token}")
         res = send_mail(
             subject="Magic Link",
             message=f"Your link: {os.environ['HOST_NAME']}profile/{token}",
