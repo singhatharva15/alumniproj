@@ -1,62 +1,86 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import auth
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from dashboard.settings import BASE_DIR
 from .models import *
 from .forms import CareerForm, ProfileForm
 
 
-# Create your views here.
-def index(request):
+# Profile view
+@login_required
+def profile(request):
     user= CustomUser.objects.all()
-    return render(request,"index.html",{'newusers': user})
+    return render(request,"index.html", {'newusers': user})
 
-def updateprofile(request, username):  
-    student = CustomUser.objects.get(username = username)
-    form = ProfileForm(request.POST or None, instance= student)  
-    if form.is_valid():  
-        form.save()  
-        return redirect("/home")
-    # else:
-    #     return redirect("/index.html") 
+# update profile view
+class UpdateProfile(UpdateView):
+    model = CustomUser
+    form_class = ProfileForm
+    template_name = 'editprofile.html'
+    success_url = reverse_lazy('home')
+
+# career list and create view
+class CareerCreateView(CreateView):
+    model = Career
+    form_class = CareerForm
+    template_name = 'career.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Career.objects.all()
+        return super(CareerCreateView, self).get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
     
-    return render(request, 'editprofile.html', {'students': student, 'form' : form})
+    def get_success_url(self):
+        messages.success(self.request, 'Recored Inserted Successfully')
+        return reverse_lazy('career')
 
-def destroyBatch(request, username, id):  
-    car = Career.objects.get(id=id)  
+
+# experience update view
+class UpdateExperice(UpdateView):
+    model = Career
+    form_class = CareerForm
+    template_name = 'update-experience.html'
+
+    def get_success_url(self):
+        messages.success(self.request, 'Recored Inserted Successfully')
+        return reverse_lazy('career', kwargs={'username': self.request.user.username})
+
+# career delete view
+@login_required
+def destroyBatch(request, pk):  
+    car = Career.objects.get(pk=pk)  
     car.delete()  
-    return redirect('/career/'+username) 
-
-def career(request, username):  
-    if request.method == "POST":  
-        form = CareerForm(request.POST, initial={'account': username})  
-        if form.is_valid():  
-            try:  
-                form.save()  
-                return redirect('/career/'+username)  
-            except:  
-                pass  
-    else:  
-        form = CareerForm(initial={'account': username}) 
-    exp = Career.objects.raw('SELECT * FROM alumni_Career WHERE account = %s', [username]) 
-    return render(request,'career.html',{'form':form, 'exp': exp})
+    messages.success(request, 'Recored Deleted Successfully')
+    return redirect('career',)
 
 
+
+
+@login_required
 def events(request):
     even= Events.objects.all()
     return render(request,"events.html",{'events': even})
 
+
+@login_required
 def opportunity(request):
     opp= Opportunities.objects.all()
     return render(request,"opportunity.html",{'opps': opp})
+
 
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
 
-        user= auth.authenticate(username=username, password=password)
+        user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
             return redirect('/home')
