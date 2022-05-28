@@ -23,7 +23,7 @@ class UpdateProfile(UpdateView):
     model = CustomUser
     form_class = ProfileForm
     template_name = 'editprofile.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('profile')
 
 # career list and create view
 class CareerCreateView(CreateView):
@@ -52,7 +52,7 @@ class UpdateExperice(UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, 'Recored Inserted Successfully')
-        return reverse_lazy('career', kwargs={'username': self.request.user.username})
+        return reverse_lazy('career')
 
 # career delete view
 @login_required
