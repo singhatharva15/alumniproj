@@ -1,8 +1,9 @@
-from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import login
+from django.urls import reverse_lazy
+import os
 
 from sesame.utils import get_query_string, get_user
 from django.core.cache import cache
@@ -21,7 +22,7 @@ def magic_link(request):
 
         res = send_mail(
             subject="Magic Link",
-            message=f"Your link: http://127.0.0.1:8000/home/{token}",
+            message=f"Your link: {os.environ['HOST_NAME']}profile/{token}",
             from_email= settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=True,
