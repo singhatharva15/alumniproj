@@ -1,11 +1,13 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import auth
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView
+from pyparsing import re
+from certificate_template.cg import cg
 
-from dashboard.settings import BASE_DIR
 from .models import *
 from .forms import CareerForm, ProfileForm
 
@@ -97,3 +99,10 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('/')
+
+# generate certificate
+def generate_certificate(request):
+    img = cg(request.user.username)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
