@@ -5,13 +5,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('', views.login),
-    path('home/', views.index, name='home'),
-    path('career/<username>', views.career, name ='career'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/updateprofile/<int:pk>/', views.UpdateProfile.as_view(), name="update_profile"),
+    
+    path('career/', views.CareerCreateView.as_view(), name='career'),
+    path('career/update-experience/<int:pk>/', views.UpdateExperice.as_view(), name="update_experience"),
+    path('career/delete-experience/<int:pk>/', views.destroyBatch, name="delete_experience"),  
+
     # path('career/', views.career),
-    path('events', views.events, name='events'),
-    path('opportunity', views.opportunity, name='opportunities'), 
-    path('updateprofile/<username>', views.updateprofile),
-    path('deletebatch/<username>/<int:id>', views.destroyBatch),  
-    path('login',views.login, name='login'),
-    path('logout',views.logout,name='logout'),
+    path('events/', views.events, name='events'),
+
+    path('opportunity/', views.opportunity, name='opportunities'), 
+
+    path('login/',views.login, name='login'),
+    path('logout/',views.logout,name='logout'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

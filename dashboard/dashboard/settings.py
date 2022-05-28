@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     # Local apps
     'alumni.apps.HomeConfig',
     'accounts.apps.AccountsConfig',   
+
+    # 3rd party
+    'crispy_forms',
 ]
 
 
@@ -136,9 +139,11 @@ AUTHENTICATION_BACKENDS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 
@@ -183,3 +188,6 @@ EMAIL_PORT = 587
 SESAME_MAX_AGE = 60
 SESAME_ONE_TIME = True
 SESAME_TOKEN_NAME = "secret"
+
+# crispy forms settings
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
