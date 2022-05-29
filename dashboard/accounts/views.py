@@ -1,14 +1,10 @@
 import os
 from django.shortcuts import render
-from django.conf import settings
-from django.urls import reverse_lazy
-
 
 from sesame.utils import get_query_string
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
 
 from alumni.models import CustomUser as User
 
@@ -28,8 +24,11 @@ def magic_link(request):
             subject='Magic Link',
             html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
         try:
-            sg = SendGridAPIClient(os.environ.get('SEND_GRID_API_KEY'))
+            sg = SendGridAPIClient(os.environ.get('API_KEY_SENDGRID'))
             response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
             return render(request, 'registration/magic-link.html', {"res": True})
         except Exception as e:
             print(e.message)
