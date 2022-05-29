@@ -178,12 +178,6 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 # import django_heroku
 # django_heroku.settings(locals())
 
-EMAIL_USE_TLS = True  
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_HOST_USER = 'bhardwajsushil911@gmail.com'  
-EMAIL_HOST_PASSWORD = 'Null-Byte@123'  
-EMAIL_PORT = 587 
-
 # set token expiry
 SESAME_MAX_AGE = 60
 SESAME_ONE_TIME = True
