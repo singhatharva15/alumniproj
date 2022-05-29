@@ -28,7 +28,7 @@ def magic_link(request):
             subject='Magic Link',
             html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
         try:
-            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            sg = SendGridAPIClient(os.environ.get('SEND_GRID_API_KEY'))
             response = sg.send(message)
             return render(request, 'registration/magic-link.html', {"res": True})
         except Exception as e:
