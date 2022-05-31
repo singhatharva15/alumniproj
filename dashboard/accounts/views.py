@@ -1,5 +1,6 @@
 import os
 from django.shortcuts import render
+from django.core.mail import send_mail
 
 from sesame.utils import get_query_string
 
@@ -18,17 +19,24 @@ def magic_link(request):
         user, _ = User.objects.get_or_create(username=email.split('@')[0], email=email)
         token = get_query_string(user)
 
-        message = Mail(
-            from_email='sushilbhardwaj705@gmail.com',
-            to_emails=email,
-            subject='Magic Link',
-            html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
+        # message = Mail(
+        #     from_email='sushilbhardwaj705@gmail.com',
+        #     to_emails=email,
+        #     subject='Magic Link',
+        #     html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
         try:
-            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-            response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
+            res = send_mail(
+                subject='Magic Link',
+                html_message=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>",
+                from_email=os.environ['EMAIL_SENDER'],
+                recipient_list=[email],
+            )
+            print(res)
+            # sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            # response = sg.send(message)
+            # print(response.status_code)
+            # print(response.body)
+            # print(response.headers)
             return render(request, 'registration/magic-link.html', {"res": True})
         except Exception as e:
             print(e.message)
