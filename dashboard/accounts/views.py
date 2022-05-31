@@ -1,12 +1,10 @@
 import os
 from django.shortcuts import render
+from django.core.mail import send_mail
 
 from sesame.utils import get_query_string
 
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-
-from alumni.models import CustomUser as User
+from accounts.models import User
 
 # Create your views here.
 def magic_link(request):
@@ -15,20 +13,28 @@ def magic_link(request):
         if not email:
             return render(request, 'registration/magic-link.html', {"error": "Please enter valid email"}) 
     
-        user, _ = User.objects.get_or_create(username=email.split('@')[0], email=email)
+        user, _ = User.objects.get_or_create(email=email)
         token = get_query_string(user)
 
-        message = Mail(
-            from_email='sushilbhardwaj705@gmail.com',
-            to_emails=email,
-            subject='Magic Link',
-            html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
+        print(f"http://{os.environ['HOST_NAME']}/{token}")
+        # message = Mail(
+        #     from_email='sushilbhardwaj705@gmail.com',
+        #     to_emails=email,
+        #     subject='Magic Link',
+        #     html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
         try:
-            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-            response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
+            res = send_mail(
+                'Magic Link',
+                f"<strong>Magic link for login: {os.environ['HOST_NAME']}/{token}</strong>",
+                os.environ['EMAIL_SENDER'],
+                [email],
+            )
+            print(res)
+            # sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            # response = sg.send(message)
+            # print(response.status_code)
+            # print(response.body)
+            # print(response.headers)
             return render(request, 'registration/magic-link.html', {"res": True})
         except Exception as e:
             print(e.message)

@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'alumni.CustomUser'
+AUTH_USER_MODEL = 'accounts.User'
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -177,6 +177,13 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 #Activate heroku
 # import django_heroku
 # django_heroku.settings(locals())
+
+# elastic mail setup
+EMAIL_HOST=os.environ['EMAIL_SERVER']
+EMAIL_HOST_USER=os.environ['EMAIL_SENDER']
+EMAIL_HOST_PASSWORD=os.environ['EMAIL_PASSWORD']
+EMAIL_PORT=os.environ['EMAIL_PORT']
+EMAIL_USE_TLS=True
 
 # set token expiry
 SESAME_MAX_AGE = 60
