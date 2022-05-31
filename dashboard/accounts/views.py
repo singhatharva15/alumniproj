@@ -4,10 +4,7 @@ from django.core.mail import send_mail
 
 from sesame.utils import get_query_string
 
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-
-from alumni.models import CustomUser as User
+from accounts.models import User
 
 # Create your views here.
 def magic_link(request):
@@ -16,9 +13,10 @@ def magic_link(request):
         if not email:
             return render(request, 'registration/magic-link.html', {"error": "Please enter valid email"}) 
     
-        user, _ = User.objects.get_or_create(username=email.split('@')[0], email=email)
+        user, _ = User.objects.get_or_create(email=email)
         token = get_query_string(user)
 
+        print(f"http://{os.environ['HOST_NAME']}/{token}")
         # message = Mail(
         #     from_email='sushilbhardwaj705@gmail.com',
         #     to_emails=email,
@@ -26,10 +24,10 @@ def magic_link(request):
         #     html_content=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>")
         try:
             res = send_mail(
-                subject='Magic Link',
-                html_message=f"<strong>Magic link for login: {os.environ['HOST_NAME']}profile/{token}</strong>",
-                from_email=os.environ['EMAIL_SENDER'],
-                recipient_list=[email],
+                'Magic Link',
+                f"<strong>Magic link for login: {os.environ['HOST_NAME']}/{token}</strong>",
+                os.environ['EMAIL_SENDER'],
+                [email],
             )
             print(res)
             # sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
