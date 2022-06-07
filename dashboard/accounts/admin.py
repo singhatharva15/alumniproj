@@ -1,12 +1,15 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from import_export.admin import ImportExportModelAdmin
 
-from accounts.models import User
+from accounts.models import Otp, User
+from accounts.resources import UserResource
 
 
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(ImportExportModelAdmin):
+    resource_class = UserResource
+
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name', 'last_login')}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name', 'college','batch','course_completed','mobile','career_opportunity','mentor_students','train_students','attend_events', 'last_login')}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -25,11 +28,11 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'last_login')
+    list_display = ('email', 'first_name', 'last_name', 'mobile', 'is_staff', 'last_login')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
 
-
 admin.site.register(User, UserAdmin)
+admin.site.register(Otp)

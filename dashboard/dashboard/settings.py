@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # 3rd party
     'crispy_forms',
+    'import_export',
 ]
 
 
@@ -55,7 +56,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    "sesame.middleware.AuthenticationMiddleware",
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -131,7 +131,6 @@ AUTH_USER_MODEL = 'accounts.User'
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "sesame.backends.ModelBackend",
 ]
 
 # Internationalization
@@ -179,16 +178,14 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 # django_heroku.settings(locals())
 
 # elastic mail setup
-EMAIL_HOST=os.environ['EMAIL_SERVER']
-EMAIL_HOST_USER=os.environ['EMAIL_SENDER']
-EMAIL_HOST_PASSWORD=os.environ['EMAIL_PASSWORD']
-EMAIL_PORT=os.environ['EMAIL_PORT']
-EMAIL_USE_TLS=True
-
-# set token expiry
-SESAME_MAX_AGE = 60
-SESAME_ONE_TIME = True
-SESAME_TOKEN_NAME = "secret"
+# EMAIL_HOST=os.environ['EMAIL_SERVER']
+# EMAIL_HOST_USER=os.environ['EMAIL_SENDER']
+# EMAIL_HOST_PASSWORD=os.environ['EMAIL_PASSWORD']
+# EMAIL_PORT=os.environ['EMAIL_PORT']
+# EMAIL_USE_TLS=True
 
 # crispy forms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

@@ -59,3 +59,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return "/users/%i/" % (self.pk)
+
+
+class Otp(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  otp = models.CharField(max_length=100)
+  is_valid = models.BooleanField(default=False)
