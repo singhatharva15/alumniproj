@@ -1,9 +1,6 @@
 from django import forms
 from random import randint
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, HTML, Submit
-
 from accounts.models import User, Otp
 from utils.sendmail import send_otp_to_email
 

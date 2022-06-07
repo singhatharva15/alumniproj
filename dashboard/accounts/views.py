@@ -1,9 +1,7 @@
-from django.http import request
 from django.shortcuts import redirect, render
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib import messages
-from django.views import View
 
 
 from accounts.form import EmailForm, OtpForm
@@ -44,7 +42,7 @@ def verify_otp(request):
                 return redirect('send_otp')
 
             otp_obj = Otp.objects.get(user=user)
-            
+
             if otp_code != otp_obj.otp:
                 messages.error(request, message="OTP didn't match please try again.")
                 return redirect('verify_otp')
