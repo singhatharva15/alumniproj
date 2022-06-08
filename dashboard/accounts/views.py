@@ -1,31 +1,64 @@
 from django.shortcuts import redirect, render
-from django.core.mail import send_mail
-from django.conf import settings
+from django.shortcuts import redirect
 from django.contrib.auth import login
-from django.urls import reverse_lazy
-import os
+from django.contrib import messages
 
-from sesame.utils import get_query_string, get_user
-from django.core.cache import cache
 
-from alumni.models import CustomUser as User
+from accounts.form import EmailForm, OtpForm
+from accounts.models import User, Otp
 
-# Create your views here.
-def magic_link(request):
+
+def send_otp(request):
     if request.POST:
-        email = request.POST.get('email')
-        if not email:
-            return render(request, 'registration/magic-link.html', {"error": "Please enter valid email"}) 
-    
-        user, _ = User.objects.get_or_create(username=email.split('@')[0], email=email)
-        token = get_query_string(user)
+        form = EmailForm(request.POST)
 
-        res = send_mail(
-            subject="Magic Link",
-            message=f"Your link: {os.environ['HOST_NAME']}profile/{token}",
-            from_email= settings.EMAIL_HOST_USER,
-            recipient_list=[email],
-            fail_silently=True,
-        )
-        return render(request, 'registration/magic-link.html', {"res": True})
-    return render(request, 'registration/magic-link.html', {})
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            print(email)
+            request.session['email'] = email
+            return redirect('verify_otp')
+        return render(request, 'registration/login.html', {"form": form})
+    else:
+        form = EmailForm()
+    return render(request, 'registration/login.html', {"form": form})
+
+
+def verify_otp(request):
+    if request.POST:
+        form = OtpForm(request.POST)
+
+        email = request.session.get('email')
+
+        if email is None:
+            messages.error(request, message="Something went wrong! Plese try again.")
+            return redirect('send_otp')
+        
+        if form.is_valid():
+            otp_code = form.cleaned_data['otp']
+            user = User.objects.get(email=email)
+            
+            if user is None:
+                messages.error(request, message="You are not registered please contact admin!")
+                return redirect('send_otp')
+
+            otp_obj = Otp.objects.get(user=user)
+
+            if otp_code != otp_obj.otp:
+                messages.error(request, message="OTP didn't match please try again.")
+                return redirect('verify_otp')
+            
+            login(request, user)
+            otp_obj.is_valid = False
+            return redirect('profile')
+
+        return render(request, 'registration/verify_otp.html', {"form": form})
+    else:
+        email = request.session.get('email')
+        print(email)
+        if email is None:
+            messages.error(request, message="Something went wrong! Plese try again.")
+            return redirect('send_otp')
+        
+        form = OtpForm()
+    return render(request, 'registration/verify_otp.html', {"form": form})
+    

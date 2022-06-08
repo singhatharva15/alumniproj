@@ -1,22 +1,14 @@
-from dataclasses import fields
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from .models import Career, CustomUser
-from django.views.generic import CreateView
-from django.contrib.auth.models import User
+from .models import Career
+from accounts.models import User
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout,Row, Column, Field, Div, HTML, ButtonHolder, Submit
-
-class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = CustomUser
-        fields = "__all__"
+from crispy_forms.layout import Layout,Row, Column, Field, HTML, Submit
 
 
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'first_name', 
             'last_name', 
@@ -77,7 +69,7 @@ class CareerForm(forms.ModelForm):
             ),
             HTML('<div class="text-right">'),
             HTML('<hr />'),
-            Submit('add-exp-form-submit', 'Add Exprerience', css_class="btn btn-primary"),
+            Submit('add-exp-form-submit', 'Submit', css_class="btn btn-primary"),
             HTML('</div>'),
         )
     
